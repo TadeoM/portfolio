@@ -1,0 +1,246 @@
+/* Table of Contents
+_______________________________________
+- General Content
+- Typography
+- Header & Navigation
+- Images & Media
+- Footer
+- Media Queries
+_______________________________________*/
+
+/* General Content ( )
+@import url('https://fonts.googleapis.com/css?family=Arvo|Open+Sans');
+
+_______________________________________*/
+.main { padding-top: 3%; }
+.row{ padding: 2% 0; }
+
+
+
+
+/* Typography Content
+_______________________________________*/
+
+body{
+    font-family: 'Oswald', sans-serif;
+    font-size: 2em;
+    color: #E3E3E3;
+    background-color: #171717;
+}
+h2 {
+  font-family: 'Vollkorn SC', cursive;
+  font-size: 3em;
+  margin: 0.67em;
+
+}
+
+.logo h1 { font-family: 'Vollkorn SC', cursive; }
+
+h2.bio{ color: #00915E;}
+h5 { font-weight: bold; }
+p.bio { color: #E3E3E3;}
+li{ list-style: none; }
+
+
+/* Header & Navigation Content
+_______________________________________*/
+header.main_nav {
+  padding: 1% 0;
+  display: block;
+}
+
+
+.logo {
+  margin: 2% auto;
+  text-align: center;
+}
+
+.logo h1 {
+  font-size: 3em;
+  color: #00915E;
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 2px 10px 0 10px;
+  margin: 0;
+  left: 25%;
+  margin: 0 auto;
+  width: 500px;
+  height: 55px;
+}
+
+/* The side navigation menu */
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px ;
+    margin-left: 50px;
+}
+
+.hamburger {
+    position: fixed;
+    font-size: 2em;
+    color: #818181;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+/* Images & Media Content
+_______________________________________*/
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+img.avater {
+  border-radius: 400px;
+  border: 5px solid #036564;
+}
+img:hover { opacity: 0.8; }
+
+.logo_image {
+  float: left;
+  left: 3%;
+  top: 2%;
+  width: 8%;
+  height: 8%;
+  position: absolute;
+}
+
+.resume {
+  text-align: center;
+}
+.resume img {
+  width: 75px;
+  height: 75px;
+}
+.resume img:hover{
+  background-color: #666;
+}
+
+
+.img__wrap {
+  position: relative;
+
+}
+
+.img__description_layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(36, 62, 206, 0.6);
+  color: #fff;
+  visibility: hidden;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* transition effect. not necessary */
+  transition: opacity .2s, visibility .2s;
+}
+
+.img__wrap:hover .img__description_layer {
+  visibility: visible;
+  opacity: 1;
+}
+
+.img__description {
+  transition: .2s;
+  transform: translateY(1em);
+}
+
+.img__wrap:hover .img__description {
+  transform: translateY(0);
+}
+
+/* Footer Content
+_______________________________________*/
+ul.social {
+  display: block;
+  margin: 5% 0;
+  list-style-type: none;
+  text-align: center;
+}
+ul.social li {
+  font-size: 2em;
+  display: inline;
+  padding: 0 2%;
+}
+ul.social li a {
+  color: #7F7F7F;
+}
+ul.social li.facebook a:link { color: rgb(59,89,152) }
+ul.social li.twitter  a:link { color: rgb(0, 172, 237) }
+ul.social li.linkedin a:link { color: rgb(0,123,182) }
+ul.social li.facebook a:hover { color: rgb(77,118,201) }
+ul.social li.twitter  a:hover { color: rgb(29, 202, 255) }
+ul.social li.linkedin a:hover { color: rgb(0,141,209) }
+
+p.copyright {
+  text-align: center;
+  color: #7F7F7F;
+  font-size: 1em;
+}
+
+/* Media Queries Content
+_______________________________________*/
+@media (max-width: 600px) {
+  .logo h1 {
+    width: 300px;
+    margin: 3% 0 0 12% ;
+    font-size: 2em;
+    height: 80px;
+  }
+}
+/* Larger than mobile */
+@media (max-width: 479px) {
+  .logo h1 {
+    margin: 6% 0 0 6% ;
+    text-align: center;
+    font-size: 1.5em;
+    height: 50px;
+  }
+  .main { padding-top: 15%; }
+  .portfolio img { margin-bottom: 10%; }
+  img.avatar { margin-top: 15%; }
+  h2.bio { font-size: 2.5em; }
+  p.bio {
+    font-size: 1.25em;
+    color: #3f7f7c;
+  }
+}

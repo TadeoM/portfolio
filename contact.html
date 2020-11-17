@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Tadeo Menichelli | Game Designer/Developer</title>
+  <meta name="description" content="Portfolio for Tadeo Menichelli, a Game Designer
+  and Developer studying at the Rochester Institute of Technology">
+  <meta name="author" content="Tadeo Menichelli">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Vollkorn+SC" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+
+  <!-- Scripts
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/Logo.png">
+
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&#9776;</a>
+        <a href="index.html">Software Work</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="https://people.rit.edu/txm1918/330/Visualizer/AudioVisualizerPrototype.html">Audio Visualizer</a>
+        <a href="https://get-this-tea-db.herokuapp.com/">Database Website Project</a>
+        <a href="https://gamer-pluss.herokuapp.com/">Gamer+</a>
+    </div>
+
+<!-- Use any element to open the sidenav -->
+    <span onclick="openNav()" class="hamburger">&#9776;</span>
+
+  <header class="main_nav green">
+    <div class="container">
+      <div class="twelve columns">
+        <div class="logo">
+          <h1>Tadeo Makes Things</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<!-- class image-link is not working, no lightbox effect -->
+  <div class="container main">
+    <div class="row green">
+    <div class="container">
+      <div class="four columns">
+        <img class="avater" src="images/me.jpg" alt="ME.jpg"/>
+      </div>
+      <div class="eight columns">
+        <h2 class="bio">About Me</h2>
+        <p class="bio">Hello! I am Tadeo Menichelli, I was born in Buenos Aires, Argentina, and currently live in Saddle Brook, NJ. I study Game Design & Development at the Rochester Institute of Technology.
+        I have a passion for level design, content design, and gameplay programming. My favorite game setting is Warcraft, and I played a lot of Warcraft 2 and 3 as a kid, and have played a ton of World of Warcraft.
+        The strategy genre is my favorite and I'd put Total War Warhammer 1 & 2 at close second favorite game. Outside of digital games, I play the Warmachine and Warhammer tabletop games. I also love to play Guitar, and have played alto and baritone saxophone throughout most of my highschool
+        career. During the winter you can even find me snowboarding whenever I can get up to the mountains. And with that, enjoy my portfolio and I hope to talk you, the viewer, soon!</p>
+        <div class="resume">
+          <a href="https://drive.google.com/file/d/1Vj-ijWq4TKjs-cMfdO6ev2VWXzzLIUvp/view?usp=sharing">
+            <img src="images/resume.png" alt="Résumé link" title="Résumé link">
+              
+          </a>
+      </div>
+
+      </div>
+    </div>
+  </div> <!-- Row Green -->
+      <object data="Resume.pdf" type="application/pdf">
+  Your browser does not support pdfs, <a href="Resume.pdf">click here to
+  download the file.</a>
+</object>
+  </div>  <!-- Main Container-->
+
+  
+
+  <footer>
+    <div class="container">
+      <div class="row twelve columns">
+        <ul class="social">
+          <li class="facebook"><a href="https://www.facebook.com/tadeo.menichelli"><i class="fa fa-facebook-square fa-lg"></i></a></li>
+          <li class="twitter"><a href="https://twitter.com/tmenichelli?lang=en"><i class="fa fa-twitter-square fa-lg"></i></a></li>
+          <li class="linkedin"><a href="https://www.linkedin.com/in/tadeo-menichelli-592a02126/"><i class="fa fa-linkedin-square fa-lg"></i></a></li>
+        </ul>
+      </div>
+      <div class="row twelve columns">
+        <p class="copyright">&copy; 2017 Tadeo Develops. All Rights Reserved.</p>
+        <p class="copyright" >Fonts found through &#169; Google Fonts and tutorial used through &#169; Lynda, all rights reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- End Document
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="scripts/jquery.magnific-popup.js"></script>
+  <script type="text/javascript">
+    // Initialize popup as usual
+$('.image-link').magnificPopup({
+  type: 'image',
+  mainClass: 'mfp-with-zoom', // this class is for CSS animation below
+
+  zoom: {
+    enabled: true, // By default it's false, so don't forget to enable it
+
+    duration: 300, // duration of the effect, in milliseconds
+    easing: 'ease-in-out', // CSS transition easing function
+
+    // The "opener" function should return the element from which popup will be zoomed in
+    // and to which popup will be scaled down
+    // By defailt it looks for an image tag:
+    opener: function(openerElement) {
+      // openerElement is the element on which popup was initialized, in this case its <a> tag
+      // you don't need to add "opener" option if this code matches your needs, it's defailt one.
+      return openerElement.is('img') ? openerElement : openerElement.find('img');
+    }
+  }
+
+});
+  </script>
+    
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    
+        window.onload = openNav;
+    </script>
+  </body>
+  </html>
