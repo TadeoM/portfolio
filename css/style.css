@@ -34,7 +34,10 @@ h2 {
 
 .logo h1 { font-family: 'Days One', cursive; }
 
-h2.bio{ color: #00915E;}
+h2.bio{ 
+  color: #00915E;
+  margin-top: 0;
+}
 h5 { font-weight: bold; }
 p.bio { color: #E3E3E3;}
 li{ list-style: none; }
