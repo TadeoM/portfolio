@@ -1,0 +1,91 @@
+body {
+		background: black;
+		font-family: 'Righteous', cursive, tahoma, verdana, sans serif ;
+         max-width: 100%;
+    overflow-x: hidden;
+	}
+
+	canvas {
+		margin-left:10px;
+		margin-top:10px;
+		box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+		background: black;
+	}
+    
+
+	#controls{
+		margin-left:10px;
+		margin-top:10px;
+        position:absolute;
+        background:grey;
+        padding:15px;
+        color:black;
+        
+  }
+label
+{
+    color:black;
+}
+#playControls
+{
+    position: relative;
+    left:50px;
+    bottom: 175px;
+}
+  section{
+  	margin-bottom:1em;
+  }
+  
+#playButton
+{
+    border: none;
+    background: black;
+    color: antiquewhite;
+    
+}
+#fsButton
+{
+    border: none;
+    background: black;
+      color: antiquewhite;
+}
+#prevTrack
+{
+     border: none;
+    background: black;
+      color: antiquewhite;
+}
+#nextTrack
+{
+     border: none;
+    background: black;
+      color: antiquewhite;
+}
+.select-wrapper + label 
+{
+    font-size: 1.2rem;
+}
+input
+{
+    color:black;
+}
+button:hover
+{
+    color: #2c3e50;
+}
+button > * {
+  pointer-events: none;
+}
+/*
+CSS to override Materialize
+*/
+.input-field > label
+{
+    color:black;
+}
+input[type=range] + .thumb {
+  display: none;
+}
+/*
+CSS for Sliders
+*/

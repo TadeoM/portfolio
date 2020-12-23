@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- Sean Koh, Tadeo Menichelli-->
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/style.css"  media="screen,projection"/>
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">   
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta charset="utf-8" />
+	<title>Floating In Spacex</title>
+	<style>
+	
+	</style>
+    <script type="text/javascript" src="js/init.js"></script>
+</head>
+<body>
+<div class = "row">
+    <div id ="overlay">
+    <div class = "col s3">
+	<div id="controls">
+		<audio></audio>
+		<div class ="input-field">
+			<select id="trackSelect">
+				<option value="media/ComfortablyNumb.mp3">Comfortably Numb</option>
+				<option value="media/DoneDying.mp3">Done Dying</option>
+				<option value="media/ItsCalledFreefal.mp3" selected>Its Called Freefall</option>
+                <option value="media/1979.mp3">1979</option>
+				<option value="media/GreatDepression.mp3">Great Depression</option>
+				<option value="media/Miracle.mp3">Miracle</option>
+                <option value="media/ComeAlong.mp3">Come Along</option>
+				<option value="media/OutOfSight.mp3">Out of Sight</option>
+				<option value="media/SharkAttack.mp3">Shark Attack</option>
+                <option value="media/Homage.mp3">Homage</option>
+			</select>
+		<label>Track Select: </label>
+        </div>
+        
+		<div class="section">
+            <form action="#">
+			Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
+			<span id="volumeLabel">???</span>
+                </form>
+        </div>
+        
+        <div class="section">
+            <form action="#">
+			Alpha: <input type="range" id="alphaSlider" min="0" max="1" value="0.4" step="0.1">
+			<span id="alphaLabel">???</span>
+                </form>
+        </div>
+        
+        <div class="section">
+            <form action="#">
+			More Eyes: <input type="range" id="eyeSlider" min="0" max="10" value="10" step="1">
+			<span id="eyeLabel">???</span>
+        </form>
+        </div>
+            
+        <h6>Effects</h6>
+        <div class="section center-align">
+         <form action="#">
+             <label>
+                 <input type="checkbox" id="noise"> 
+                 <span>Noise</span>
+             </label>
+            <label>
+                <input type="checkbox" id="delay" >
+                <span>Delay</span>
+             </label>
+            <label>
+                <input type="checkbox" id="invert">
+                <span>Invert</span>
+             </label>
+             </form>
+         </div>
+        
+        <div class = "section" id="passType">
+            <form action="#">
+                <p>
+                <label>
+                    <input name="eyeForm" type="radio" class="radio-inline" checked id="reference"/>
+                    <span>Reference</span>
+                </label>
+                </p>
+                <p>
+                <label>
+                    <input name="eyeForm" type="radio" class="radio-inline" id="waveform"/>
+                    <span>Waveform</span>
+                </label>
+                </p>
+            </form>
+        </div>
+        
+        <div class = "section" id="colorPattern">
+            <form action="#">
+                <p>
+                <label>
+                    <input name="colorForm" type="radio" class="radio-inline" checked id="solidColors" />
+                    <span>Solid Colors</span>
+                </label>
+                </p>
+                <p>
+                <label>
+                    <input name="colorForm" type="radio" class="radio-inline" id="gradientColors"/>
+                    <span>Gradient Colors</span>
+                </label>
+                </p>
+            </form>
+        </div>
+        
+        <div class = "section">
+            <div class ="input-field">
+			<select id="colorSelect">
+				<option value="blue">Blue</option>
+				<option value="red">Red</option>
+				<option value="purple" selected>Purple</option>
+                <option value="green" >Green</option>
+                <option value="hazel" >Hazel</option>
+			</select>
+		<label >Colors: </label>
+            </div>
+        </div>
+        
+	</div>
+    </div>
+</div>
+    <div class = "col s9 valign-wrapper">
+	<canvas width="1280" height="600"></canvas>
+    </div>
+</div>
+        
+    <div id="playControls">
+        <div class="section">
+		<div class="center-align">
+            <button id="prevTrack"  class="s2"><i class="large material-icons">skip_previous</i></button>
+        <button id="playButton" data-playing="no" class="s2"><i class="large material-icons" id="playIcon" >play_circle_outline</i></button>
+            <button id="nextTrack"  class="s2" ><i class="large material-icons">skip_next</i></button>
+		<button id="fsButton" class="s2"><i class="large material-icons">fullscreen</i></button>
+            </div>
+	   </div>
+    </div>
+        
+
+	<script type="text/javascript" src="js/materialize.js"></script>
+    <script type="text/javascript" src="js/init.js"></script>
+ 
+</body>
+</html>
