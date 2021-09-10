@@ -31,6 +31,13 @@ h2 {
   margin: 0.67em;
 
 }
+a{
+color: #00915E;
+text-decoration: none;
+}
+a:hover{
+color: #5eb596;
+}
 
 .logo h1 { font-family: 'Days One', cursive; }
 
