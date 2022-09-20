@@ -126,6 +126,13 @@ header.main_nav {
     padding: 20px;
 }
 
+iframe {
+
+  margin: 0 auto;
+  background-color: #777;
+  display:block;
+}
+
 /* Images & Media Content
 _______________________________________*/
 img {
