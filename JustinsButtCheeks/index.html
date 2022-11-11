@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tower Defence</title>
+        <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+        <style>
+        body{
+            overflow-x: hidden;
+            overflow-y: hidden;   
+            background-color: black;
+        }
+        canvas{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        #overlayCanvas{
+            z-index: 1;
+        }
+        </style>
+    </head>
+    <body>
+        <canvas id="mainCanvas" width="600" height="400"></canvas>
+        <canvas id="overlayCanvas" width="600" height="400"></canvas>
+        <script src="js/init.js" type="module"></script>
+    </body>
+</html>
+<!-- Royalty Free Music from Bensound -->
+<!-- Using normal ES6 for the time being, so it is easier to test, and then will convert over to the module system when closer to finished -->
