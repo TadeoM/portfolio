@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Web Audio Visualizer</title>
+	<style>
+	body {
+         background: white;
+         font-family: tahoma, verdana, sans serif;
+		 color: black;
+      }
+
+      canvas {
+        margin-left:10px;
+        margin-top:10px;
+        box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+        background: black;
+    }
+      
+      #controls{
+      	margin-left:10px;
+        margin-top:10px;
+      }
+	</style>
+	<script>
+	// An IIFE ("Iffy") - see the notes in mycourses
+	(function(){
+		"use strict";
+		
+		let NUM_SAMPLES = 256;
+		let SOUND_1 = 'media/Great Fairy\'s Fountain.mp3';
+		let SOUND_2 = 'media/Final Hours.mp3';
+		let SOUND_3 = 'media/Goodbye To A World.mp3';
+		let SOUND_4 = 'media/test.mp3';
+		let audioElement;
+		let analyserNode;
+		let canvas,ctx;
+		let invert = false, tintRed = false, noise = false, lines = false, effect = true, brightness;
+		let circlePos = [{}];
+		let circleMinRadius, circleMaxRadius;
+		let barMinHeight, barMaxHeight;
+		let mainBarMinHeight, mainBarMaxHeight, mainBarStartHeight;
+		let lastData = [], lastDataMax;
+		let minCurveHeight, maxCurveHeight;
+		let delayAmount = 0.5;
+		let delayNode;
+
+		function init(){
+			// set up canvas stuff
+			canvas = document.querySelector('canvas');
+			ctx = canvas.getContext("2d");
+			
+			// get reference to <audio> element on page
+			audioElement = document.querySelector('audio');
+			
+			// call our helper function and get an analyser node
+			analyserNode = createWebAudioContextWithAnalyserNode(audioElement);
+			
+			// get sound track <select> and Full Screen button working
+			setupUI();
+			
+			// load and play default sound into audio element
+			playStream(audioElement,SOUND_1);
+
+			brightness = 0;
+			circleMinRadius = canvas.width / 400;
+			circleMaxRadius = canvas.width / 100;
+			barMinHeight = 4;
+			barMaxHeight = 70;
+
+			mainBarMinHeight = 1;
+			mainBarMaxHeight = 200;
+			mainBarStartHeight = canvas.height / 2;
+
+			minCurveHeight = 5;
+			maxCurveHeight = 400;
+
+			lastDataMax = 3;
+
+			setupCircles();
+
+
+			// start animation loop
+			update();
+		}
+		
+		function getRandomNum(min, max)
+		{
+			return Math.floor((Math.random() * (max - min)) + min);
+		}
+
+		function setupCircles()
+		{
+			for (let i = 0; i < NUM_SAMPLES; i++)
+			{
+				let position = {x: 0, y: 0};
+
+				position.x = getRandomNum(circleMaxRadius, canvas.width - circleMaxRadius);
+				position.y = getRandomNum(circleMaxRadius, canvas.height - circleMaxRadius);
+
+				circlePos.push(position);
+			}
+		}
+		
+		function createWebAudioContextWithAnalyserNode(audioElement) {
+			let audioCtx, analyserNode, sourceNode;
+			// create new AudioContext
+			// The || is because WebAudio has not been standardized across browsers yet
+			// http://webaudio.github.io/web-audio-api/#the-audiocontext-interface
+			audioCtx = new (window.AudioContext || window.webkitAudioContext);
+			
+			//delay node
+			delayNode = audioCtx.createDelay();
+			delayNode.delayTime.value = delayAmount;
+
+			// create an analyser node
+			analyserNode = audioCtx.createAnalyser();
+			
+			/*
+			We will request NUM_SAMPLES number of samples or "bins" spaced equally 
+			across the sound spectrum.
+			
+			If NUM_SAMPLES (fftSize) is 256, then the first bin is 0 Hz, the second is 172 Hz, 
+			the third is 344Hz. Each bin contains a number between 0-255 representing 
+			the amplitude of that frequency.
+			*/ 
+			
+			// fft stands for Fast Fourier Transform
+			analyserNode.fftSize = NUM_SAMPLES;
+			
+			// this is where we hook up the <audio> element to the analyserNode
+			sourceNode = audioCtx.createMediaElementSource(audioElement); 
+			sourceNode.connect(analyserNode);
+			
+			// here we connect to the destination i.e. speakers
+			analyserNode.connect(audioCtx.destination);
+			return analyserNode;
+		}
+		
+		function setupUI(){
+			document.querySelector("#trackSelect").onchange = function(e){
+				playStream(audioElement,e.target.value);
+			};
+			
+			document.querySelector("#fsButton").onclick = function(){
+				requestFullscreen(canvas);
+			};
+
+			document.querySelector('#invert').onchange = function(){
+				invert = !invert;
+			}
+			document.querySelector('#tint').onchange = function()
+			{
+				tintRed = !tintRed;
+			}
+			document.querySelector('#noise').onchange = function()
+			{
+				noise = !noise;
+			}
+			document.querySelector('#lines').onchange = function()
+			{
+				lines = !lines;
+			}
+			document.querySelector("#brightnessSlider").oninput = function(e){
+				brightness = Math.floor(e.target.value);
+			};
+			document.querySelector('#trailAmountSlider').oninput = function(e)
+			{
+				lastDataMax = Math.floor(e.target.value);
+				document.querySelector('#trailAmountCounter').innerHTML = "Wave Trail Amount: " + lastDataMax;
+				do{
+					lastData.splice(0, 1);
+				}while(lastData.length > lastDataMax);
+			};
+			document.querySelector('#delayAmountSlider').oninput = function(e)
+			{
+				delayNode.delayTime.value = e.target.value;
+			}
+		}
+		
+		function playStream(audioElement,path){
+			audioElement.src = path;
+			audioElement.play();
+			audioElement.volume = 0.05;
+			document.querySelector('#status').innerHTML = "Now playing: " + path;
+		}
+		
+		function update() { 
+			// this schedules a call to the update() method in 1/60 seconds
+			requestAnimationFrame(update);
+			/*
+				Nyquist Theorem
+				http://whatis.techtarget.com/definition/Nyquist-Theorem
+				The array of data we get back is 1/2 the size of the sample rate 
+			*/
+			
+			// create a new array of 8-bit integers (0-255)
+			let data = new Uint8Array(NUM_SAMPLES/2); 
+			// populate the array with the frequency data
+			// notice these arrays can be passed "by reference" 
+			analyserNode.getByteFrequencyData(data);
+
+			// OR
+			//analyserNode.getByteTimeDomainData(data); // waveform data
+			
+			// DRAW!
+			ctx.clearRect(0,0,canvas.width,canvas.height);  
+			let barWidth = 2.6;
+			let lineSpacing = 2.085;
+
+			let mainBarWidth = 2;
+			let mainBarSpacing = (canvas.width / mainBarWidth) / 221.81146025878;
+			
+			for (let i=0; i<data.length; i++)
+			{
+				updateCircle(i, data[i]);
+			}
+
+			let highestFreq = 0;
+			let averageBeat = 0;
+			let stopLooking = false;
+			// loop through the data and draw!
+			for(let i=0; i<data.length; i++) 
+			{ 
+
+				if (data[i] != 0)
+				{
+					highestFreq = i;
+					stopLooking = true;
+				}
+
+				let xPos = barWidth + (lineSpacing * i) + (barWidth * i);
+				drawLine(xPos, canvas.height, barWidth, data[i], false);
+				drawLine(canvas.width - xPos, canvas.height, barWidth, data[i], false);
+				drawLine(xPos, 0, barWidth, data[i], true);
+				drawLine(canvas.width - xPos, 0, barWidth, data[i], true);
+				
+				xPos = (mainBarSpacing * i) + (mainBarWidth * i) - mainBarWidth;
+				let xPosNext = (mainBarSpacing * (i + 1)) + (mainBarWidth * (i + 1)) - mainBarWidth;
+				drawWave(xPos, mainBarStartHeight, data[data.length - i], xPosNext, mainBarStartHeight, data[data.length - (i + 1)], mainBarWidth);
+				drawWave(canvas.width - xPos, mainBarStartHeight, data[data.length-i], canvas.width - xPosNext, mainBarStartHeight, data[data.length - (i + 1)], mainBarWidth);
+
+				averageBeat+=data[i];
+			}
+			
+			ctx.save();
+			if (lastData != [])
+			{
+				for (let j=0; j < lastData.length; j++)
+				{
+					ctx.globalAlpha = 0.5 - (0.45 * (j/lastData.length));
+					let curData = lastData[j];
+					for (let i=0; i<curData.length; i++)
+					{
+						let xPos = (mainBarSpacing * i) + (mainBarWidth * i) - mainBarWidth;
+						let xPosNext = (mainBarSpacing * (i + 1)) + (mainBarWidth * (i + 1)) - mainBarWidth;
+						drawWave(xPos, mainBarStartHeight, curData[curData.length - i], xPosNext, mainBarStartHeight, curData[curData.length - (i + 1)], mainBarWidth);
+						drawWave(canvas.width - xPos, mainBarStartHeight, curData[curData.length-i], canvas.width - xPosNext, mainBarStartHeight, curData[curData.length - (i + 1)], mainBarWidth);
+					}
+				}
+			}
+			ctx.restore();
+			lastData.push(data);
+
+			if (lastData.length > lastDataMax)
+			{
+				lastData.splice(0, 1);
+			}
+
+			averageBeat /= data.length;
+			
+			highestFreq = data.length - highestFreq;
+			let xPos = (mainBarSpacing * highestFreq) + (mainBarWidth * highestFreq) - mainBarWidth;
+			let cpY = (averageBeat/255) * (maxCurveHeight - minCurveHeight) + minCurveHeight;
+			drawArc(0, canvas.height/2, xPos - 5, canvas.height/2, xPos/2, canvas.height/2 - cpY);
+			//drawArc(0, canvas.height/2, xPos - 5, canvas.height/2, xPos/2, canvas.height/2 + cpY);
+			//drawArc(canvas.width - xPos + 5, canvas.height/2, canvas.width, canvas.height/2, canvas.width - (xPos/2), canvas.height/2 - cpY);
+			drawArc(canvas.width - xPos + 5, canvas.height/2, canvas.width, canvas.height/2, canvas.width - (xPos/2), canvas.height/2 + cpY);
+			
+
+			manipulatePixels();
+		} 
+
+		function drawArc(x1,y1,x2,y2,cpX,cpY,lineWidth=5)
+		{
+			ctx.save();
+			ctx.strokeStyle = getWaveGradient();
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.quadraticCurveTo(cpX, cpY, x2, y2);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.restore();
+		}
+
+		function getWaveGradient()
+		{
+			let grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 5, canvas.width/2, canvas.height/2, canvas.width/2);
+			grad.addColorStop(0, "#4286f4");
+			grad.addColorStop(1/3, "#1a6df2");
+			grad.addColorStop(2/3, "#025def");
+			grad.addColorStop(1, "#4286f4");
+			
+			return grad;
+		}
+
+		function drawWave(x1, y1, data1, x2, y2, data2, width)
+		{
+
+			let barHeight = (mainBarMaxHeight - mainBarMinHeight) + mainBarMinHeight;
+			let offSet1 = (data1/255) * barHeight;
+			let offSet2 = (data2/255) * barHeight;
+
+			ctx.save();
+
+			ctx.strokeStyle = getWaveGradient();
+			ctx.lineWidth = width;
+			ctx.beginPath();
+			ctx.moveTo(x1, y1 - offSet1);
+			ctx.lineTo(x2, y2 - offSet2);
+			ctx.moveTo(x1, y1 + offSet1);
+			ctx.lineTo(x2, y2 + offSet2);
+			ctx.closePath();
+			ctx.stroke();
+
+			ctx.restore();
+		}
+
+		function drawLine(x, y, width, data, flip)
+		{
+			ctx.save();
+
+			ctx.strokeStyle = makeColor(100, 100, 100, 0.6);
+			ctx.lineWidth = width;
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+
+			let size = ((data/255) * (barMaxHeight - barMinHeight) + barMinHeight);
+			let yNew = (flip) ? y + size : y - size;
+			ctx.lineTo(x, yNew);
+			ctx.closePath();
+			ctx.stroke();
+
+			ctx.restore();
+		}
+
+		function updateCircle(index, data)
+		{
+			let percent = data / 255;
+			let radius = circleMinRadius + ((circleMaxRadius - circleMinRadius) * percent);
+			let color = makeColor(100, 100, 100, (0.6 * percent) + 0.4);
+
+			circlePos[index].y -= 1;
+			if (circlePos[index].y <= -circleMaxRadius)
+			{
+				circlePos[index].y = canvas.height + circleMaxRadius;
+				circlePos[index].x = getRandomNum(circleMaxRadius, canvas.width - circleMaxRadius);
+			}
+
+			ctx.save();
+
+			ctx.fillStyle = color;
+			ctx.beginPath();
+			ctx.arc(circlePos[index].x, circlePos[index].y, radius, 0, Math.PI * 2, false);	
+			ctx.closePath();
+			ctx.fill();
+			ctx.restore();
+		}
+		
+		function manipulatePixels()
+		{
+			let imageData = ctx.getImageData(0,0,canvas.width, canvas.height);
+			let data = imageData.data;
+			let length = data.length;
+			let width = imageData.width;
+
+			for (let i = 0; i < length; i+= 4)
+			{
+				if (tintRed)
+				{
+					data[i] = data[i] + 100;
+				}
+				if (invert)
+				{
+					let red = data[i], green = data[i+1], blue = data[i + 2];
+					data[i] = 255 - red;
+					data[i+1] = 255 - green;
+					data[i+2] = 255 - blue;
+				}
+				if (noise && Math.random() < .10){
+					data[i] = data[i + 1] = data[i + 2] = 128;
+
+					data[i + 3] = 255;
+				}
+				if (lines)
+				{
+					let row = Math.floor(i/4/width);
+					if (row % 50 == 0)
+					{
+						data[i] = data[i + 1] = data[i+2] = data[i+3] = 255;
+
+						data[i + (width * 4)] =
+						data[i + (width * 4) + 1] =
+						data[i + (width * 4) + 2] =
+						data[i + (width * 4) + 3] = 255;
+
+					}
+				}
+				if (effect)
+				{
+					let red = data[i], green = data[i+1], blue = data[i+2];
+
+					red += brightness;
+					if (red > 200)
+					{
+						red = 200;
+					}
+					blue += brightness;
+					if (blue > 200)
+					{
+						blue =200;
+					}
+					green += brightness;
+					if (green > 200)
+					{
+						green = 200;
+					}
+					
+
+					data[i] = red;
+					data[i+1] = green;
+					data[i+2] = blue;
+
+				}
+			}
+
+			ctx.putImageData(imageData, 0, 0);
+		}
+
+		// HELPER
+		function makeColor(red, green, blue, alpha){
+   			let color='rgba('+red+','+green+','+blue+', '+alpha+')';
+   			return color;
+		}
+		
+		 // FULL SCREEN MODE
+		function requestFullscreen(element) {
+			if (element.requestFullscreen) {
+			  element.requestFullscreen();
+			} else if (element.mozRequestFullscreen) {
+			  element.mozRequestFullscreen();
+			} else if (element.mozRequestFullScreen) { // camel-cased 'S' was changed to 's' in spec
+			  element.mozRequestFullScreen();
+			} else if (element.webkitRequestFullscreen) {
+			  element.webkitRequestFullscreen();
+			}
+			// .. and do nothing if the method is not supported
+		};
+		
+		
+		window.addEventListener("load",init);
+	}());
+		
+	</script>
+</head>
+<body>
+	<canvas id="canvas" width="1200" height="800"></canvas>
+	<div id="controls">
+		<audio controls loop></audio>
+		<label>Track: 
+			<select id="trackSelect" >
+				<option value="media/Great Fairy's Fountain.mp3">Great Fairy's Fountain</option>
+				<option value="media/Final Hours.mp3">Final Hours</option>
+				<option value="media/Goodbye To A World.mp3">Goodbye to a World</option>
+				<option value="media/test.mp3">Test</option>
+			</select>
+		</label>
+		<button id="fsButton">Go Full Screen</button><br>
+		<p id="status">???</p>
+		<p>Max Radius:</p>
+		<input type="range" min="50" max = "300" value = "200" id="radiusSlider"/>
+		<p>Brightness:</p>
+		<input type="range" min="0" max = "200" value = "0" id="brightnessSlider"/>		
+		<br>
+		<p id="trailAmountCounter">Wave Trail Amount: 3</p>
+		<input type="range" min="0" max = "10" value = "3" id="trailAmountSlider"/>		
+		<br>
+		<p>Delay</p>
+		<input type="range" min="0" max = "1" value = "0" step="0.1" id="delayAmountSlider"/>		
+		<br>
+		<input type = "checkbox" id="invert">Invert
+		<input type = "checkbox" id="tint">Tint Red
+		<input type = "checkbox" id="noise">Noise
+		<input type = "checkbox" id="lines">Lines
+	</div>
+</body>
+</html>
