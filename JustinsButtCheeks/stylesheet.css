@@ -1,0 +1,91 @@
+body {
+    background: black;
+    font-family: tahoma, verdana, sans serif;
+    color: white;
+ }
+
+ canvas {
+   margin-left:10px;
+   margin-top:10px;
+   box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+   background: black;
+}
+ 
+ #controls{
+     margin-left:10px;
+   margin-top:10px;
+ }
+ canvas{
+     position: relative;
+     top: -18px;
+     left: -18px;
+ }
+ html{
+     overflow: hidden;
+ }
+ #controls{
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   height: 110px;
+   overflow: hidden;
+   opacity: 0.2;
+   transition: 0.5s;
+ }
+ #controls:hover{
+     height: 700px;
+     opacity: 0.8;
+ }
+ p{
+     display: inline;
+ }
+
+/*Below is for custom sliders*/
+/*Used tutorial -> https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
+/*webkit*/
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 30%;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: #4286f4;
+  border-radius: 1px;
+  border: 0.1px solid black;  
+}
+input[type=range]::-webkit-slider-thumb {
+  border: 1px solid black;
+  width: 8px;  
+  height: 20px;
+  border-radius: 2px;
+  background: #cecece;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -8px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #4286f4;
+}
+/*firefox*/
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: #4286f4;
+  border-radius: 1px;
+  border: 0.2px solid #010101;
+}
+input[type=range]::-moz-range-thumb {
+  border: 1px solid black;
+  width: 8px;  
+  height: 20px;
+  border-radius: 2px;
+  background: #cecece;
+  cursor: pointer;
+}
